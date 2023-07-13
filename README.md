@@ -173,3 +173,6 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
   console.log(`BFF layer is running on http://localhost:${port}`);
 });
+
+
+npm install @babel/register @babel/preset-env @babel/preset-react --save-dev
