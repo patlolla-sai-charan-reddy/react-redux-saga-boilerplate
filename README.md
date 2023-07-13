@@ -93,3 +93,35 @@ Every project needs improvements, Feel free to report any bugs or improvements. 
 ## License
 
 This project is open-sourced software licensed under the MIT License. See the LICENSE file for more information.
+
+const express = require('express');
+const axios = require('axios');
+
+const app = express();
+const port = 3000;
+
+// BFF route handling
+app.get('/bff/data', async (req, res) => {
+  try {
+    // Make requests to backend services
+    const service1Response = await axios.get('http://backend-service1/api/data');
+    const service2Response = await axios.get('http://backend-service2/api/data');
+
+    // Process and aggregate the data
+    const responseData = {
+      service1Data: service1Response.data,
+      service2Data: service2Response.data
+    };
+
+    // Send the aggregated data as the response
+    res.json(responseData);
+  } catch (error) {
+    console.error('Error fetching data from backend services:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`BFF layer listening at http://localhost:${port}`);
+});
