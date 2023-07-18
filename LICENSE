@@ -19,3 +19,60 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+const htmlString = '<h1>Hello, World!</h1><p>This is the HTML content.</p>';
+
+function parseHTML(htmlString) {
+  const document = {
+    type: 'document',
+    children: []
+  };
+
+  const stack = [document];
+  let currentNode = document;
+
+  const regexTag = /<(\/)?([a-zA-Z]+)\s*([^>]*)?>/g;
+  let match;
+
+  while ((match = regexTag.exec(htmlString)) !== null) {
+    const isClosingTag = match[1] === '/';
+    const tagName = match[2];
+    const attributes = parseAttributes(match[3]);
+
+    if (!isClosingTag) {
+      const element = {
+        type: 'element',
+        tagName,
+        attributes,
+        children: []
+      };
+      
+      currentNode.children.push(element);
+      stack.push(element);
+      currentNode = element;
+    } else {
+      stack.pop();
+      currentNode = stack[stack.length - 1];
+    }
+  }
+
+  return document;
+}
+
+function parseAttributes(attributesString) {
+  const attributes = {};
+  const regexAttribute = /([a-zA-Z-]+)="([^"]*)"/g;
+  let match;
+
+  while ((match = regexAttribute.exec(attributesString)) !== null) {
+    const attributeName = match[1];
+    const attributeValue = match[2];
+    attributes[attributeName] = attributeValue;
+  }
+
+  return attributes;
+}
+
+const parsedDocument = parseHTML(htmlString);
+console.log(parsedDocument);
